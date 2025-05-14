@@ -1,0 +1,61 @@
+---
+title: "New file"
+description: "Description of your new file."
+---
+
+As a user of the Voyado Engage API, you must always ensure that, after sending a request, your solution waits for the response to arrive. If a response is delayed, you should not perform a retry before you know the reason for the delay.
+
+Always wait for a response from the Engage API before trying again.
+
+If your response is late, it is more probable that Engage is under an unusually high load and responding slowly than your message was lost along the way. Messages can be lost, of course, but it is not the most likely scenario.
+
+According to the Voyado Engage [<u>integration principles</u>](https://developer.voyado.com/en/api/integration-principles.html), a contact should always be able to perform their entire purchase in the POS or e-com, regardless of problems such as the Engage API not responding. The internet is complex and many things can go wrong or be delayed. So if your flow is time-critical, you should be prepared to handle all likely interruptions on your end, and not be entirely dependent on ideal-case response times from Engage.
+
+## **Timeouts**
+
+Engage's general stance is that delays are beneficial. The platform is designed to prioritize successful execution over speed, particularly to avoid data corruption. As such, most API endpoints are configured with long timeouts; this gives clients the best chance of receiving a response without prematurely failing the request. It is therefore not recommended that customers enforce their own timeouts.
+
+However, in critical flows, such as Create Contact, where the API interaction is tied directly to customer-facing experiences (e.g. onboarding confirmations), there is a need for quicker client feedback. In these specific cases, Engage may proactively return a timeout with a shorter interval, using the status code "504 RequestTimeOut".
+
+The exact timeout duration is not specified but might be indicated per endpoint both in this documentation and in the endpoints/developer overview.
+
+## **Retrying**
+
+If a retry is unavoidable, here are a few things to keep in mind:
+
+In general, a retry should be made as late as possible based on your particular scenario. Shorter retry intervals can make the problem worse, increasing the possibility of writing incorrect data, as well as the load on the system.
+
+But it also depends on what you're doing. For example, a job started by a server or process on another system can wait increasingly long intervals between retries (10s, 30s, 60s, 300s, etc.) whereas an action invoked by a user (such as a call from POS, e-com or the web) can get away with a shorter wait before a retry is made. But, again, wait as long as possible before retrying.
+
+POST requests change the state of the system every time they are called. So retrying a POST request without knowing if the first one went through can be very dangerous. It's always wise, when retrying a POST, to:
+
+- Wait as long as your particular scenario allows
+- Check using a GET if your previous request went through or not
+- Try another POST, at increasing intervals
+
+The basic advice is to be ready for this when it happens, and to follow [<u>the integration principles</u>](https://developer.voyado.com/en/api/integration-principles.html).
+
+### **Jitter**
+
+It can be a good idea to add some jitter when performing retries. Jitter is some randomness added to your retry schedule so that every client is not calling the system at the same time, reducing performance.
+
+For example, if your retry schedule is the following:
+
+- Retry Immediately
+- Then after 5 seconds
+- Then after 5 minutes
+- Then after 30 minutes
+
+Just do the following before each request:
+
+```
+func sync() { 
+    // instead of immediately performing the call 
+    // we add jitter to distribute the network load 
+    val jitter = random(0.5, 1.5);
+    wait(jitter.to_seconds);
+    perform_network_request()
+}
+```
+
+You can [read more about jitter in this article](https://medium.com/@juliozynger/be-a-good-client-jitter-19714ced379).
