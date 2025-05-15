@@ -18,8 +18,8 @@
             "pages": [
               "index",
               "development",
-              "api-retry-policy",
-              "create-contact"
+              "developer/api-retry-policy",
+              "developer/create-contact"
             ]
           },
           {
