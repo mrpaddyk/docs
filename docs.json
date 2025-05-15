@@ -42,21 +42,7 @@
       },
       {
         "tab": "API Reference",
-        "openapi": "https://revidetestar.acceptanstest.eclub.se/api/v2/doc",
-        "groups": [
-          {
-            "group": "API Documentation",
-            "pages": [
-              "api-reference/introduction"
-            ]
-          },
-          {
-            "group": "Endpoint Examples",
-            "pages": [
-              "api-reference/endpoint/get"
-            ]
-          }
-        ]
+        "openapi": "https://revidetestar.acceptanstest.eclub.se/api/v2/doc"
       }
     ],
     "global": {
