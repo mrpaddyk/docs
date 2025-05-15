@@ -14,10 +14,16 @@
         "tab": "Guides",
         "groups": [
           {
-            "group": "Get Started",
+            "group": "Get Started with Engage",
             "pages": [
+              "developer/introduction",
               "developer/api-retry-policy",
-              "developer/create-contact",
+              "developer/create-contact"
+            ]
+          },
+          {
+            "group": "Default articles",
+            "pages": [
               "index",
               "development"
             ]
