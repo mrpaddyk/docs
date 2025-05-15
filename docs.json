@@ -16,10 +16,10 @@
           {
             "group": "Get Started",
             "pages": [
-              "index",
-              "development",
               "developer/api-retry-policy",
-              "developer/create-contact"
+              "developer/create-contact",
+              "index",
+              "development"
             ]
           },
           {
