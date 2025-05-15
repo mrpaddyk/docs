@@ -1,13 +1,13 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "Developer",
   "colors": {
     "primary": "#16A34A",
     "light": "#07C983",
     "dark": "#15803D"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/favicon.ico",
   "navigation": {
     "tabs": [
       {
@@ -17,7 +17,6 @@
             "group": "Get Started",
             "pages": [
               "index",
-              "quickstart",
               "development",
               "api-retry-policy"
             ]
@@ -77,7 +76,7 @@
     }
   },
   "logo": {
-    "light": "/logo/light.svg",
+    "light": "/logo/developer-v3-logo.png",
     "dark": "/logo/dark.svg"
   },
   "navbar": {
