@@ -1,11 +1,13 @@
 ---
-title: "New file"
-description: "Description of your new file."
+title: "API retry policy"
+description: "How to retry failed API calls"
 ---
 
 As a user of the Voyado Engage API, you must always ensure that, after sending a request, your solution waits for the response to arrive. If a response is delayed, you should not perform a retry before you know the reason for the delay.
 
-Always wait for a response from the Engage API before trying again.
+<Note>
+  Always wait for a response from the Engage API before trying again.
+</Note>
 
 If your response is late, it is more probable that Engage is under an unusually high load and responding slowly than your message was lost along the way. Messages can be lost, of course, but it is not the most likely scenario.
 
@@ -17,7 +19,9 @@ Engage's general stance is that delays are beneficial. The platform is designed 
 
 However, in critical flows, such as Create Contact, where the API interaction is tied directly to customer-facing experiences (e.g. onboarding confirmations), there is a need for quicker client feedback. In these specific cases, Engage may proactively return a timeout with a shorter interval, using the status code "504 RequestTimeOut".
 
-The exact timeout duration is not specified but might be indicated per endpoint both in this documentation and in the endpoints/developer overview.
+<Note>
+  The exact timeout duration is not specified but might be indicated per endpoint both in this documentation and in the endpoints/developer overview.
+</Note>
 
 ## **Retrying**
 
