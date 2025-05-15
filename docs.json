@@ -17,8 +17,8 @@
             "group": "Get Started with Engage",
             "pages": [
               "developer/introduction",
-              "developer/api-retry-policy",
-              "developer/create-contact"
+              "developer/create-contact",
+              "developer/api-retry-policy"
             ]
           },
           {
