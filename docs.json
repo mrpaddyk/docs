@@ -42,6 +42,7 @@
       },
       {
         "tab": "API Reference",
+        "openapi": "https://revidetestar.acceptanstest.eclub.se/api/v2/doc",
         "groups": [
           {
             "group": "API Documentation",
@@ -52,10 +53,7 @@
           {
             "group": "Endpoint Examples",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "api-reference/contacts/count"
             ]
           }
         ]
