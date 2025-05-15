@@ -53,7 +53,7 @@
           {
             "group": "Endpoint Examples",
             "pages": [
-              "api-reference/contacts/count"
+              "api-reference/endpoint/get"
             ]
           }
         ]
