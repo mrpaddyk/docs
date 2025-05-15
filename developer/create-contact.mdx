@@ -1,0 +1,143 @@
+---
+title: "Create contant"
+description: "Create a new contact using the API"
+---
+
+A vital part of any Voyado Engage integration journey is registering new contacts. This is done via the following endpoint:
+
+`POST /api/v3/contacts`
+
+This endpoint can be used to create a contact with contactType of Contact, Member or any of your custom types. You will need to provide the mandatory fields for your specific contact type along with the key value, which is one of the following:
+
+- mobilePhone
+- email
+- externalId
+- socialSecurityNumber (Swedish/Finnish)
+
+An important change when moving from API v2 to v3 is that the values previously sent in the header (source, storeExternalId and createAsUnapproved) when creating a contact are now sent in the query string. If you send them in the header, they will be ignored and not saved.
+
+There are three optional parameters that can be sent in the query string of your request:
+
+| Query string parameter | Type   | Description                                                                                                                                                                                                                                                                                                                                                                                    |
+| ---------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **source**             | string | This shows how the contact was created. Example values here are "POS" or "e-com".                                                                                                                                                                                                                                                                                                              |
+| **storeExternalId**    | string | The unique id of the store or market the customer signed up in (the recruited-by store). Often this is a numerical code, like "600".                                                                                                                                                                                                                                                           |
+| **createAsUnapproved** | string | This creates an unverified contact which then must be verified by some other process or action, such as clicking a link in an email. It can be "true" or "false". An unverified contact like this will be ignored in reports and won't be included in segmentations until specifically asked for. The default value is "false" so if you are not using this, you don't need to worry about it. |
+
+While not mandatory, it is highly recommended to send both source and storeExternalId as it reduces problems later on.
+
+While it is possible to send in any source value you like in the header, to be able to segment/isolate them in Engage that source value also needs to be added in the back-end by your Voyado team. Contact them to do this.
+
+Before you try to create them, always check if the contact already exists. For this, use the ID-lookup service ([<u>explained here</u>](https://developer.voyado.com/en/contacts/identify-contact/find-contact.html)) where multiple identifiers can be tested to confirm if they exist in the database or not.
+
+## **Payload to create a new contact**
+
+Here is the payload you will send in your create-contact request. You should specify the contactType in the payload. This needs to be a contactType that already exists. If you give one that doesn't exist, you'll get an error and a new contact will not be created.
+
+If contactType is not specified in your payload at all, it will default to Member.
+
+```
+{
+  "firstName": "Example",
+  "email": "example@example.com",
+  "countryCode": "SE",
+  "birthDay": "1966-06-26",
+  "lang":"en",
+  "contactType": "ExampleContactType",
+  "preferences": {
+    "acceptsEmail": true,
+    "acceptsPostal": true,
+    "acceptsSms": true
+  },
+  "consents": [{
+      "id": "memberConsent",
+      "value": true,
+      "date": "2022-01-01T00:00:00+0100",
+      "source": "ECOM",
+      "comment": "Approved member terms at checkout"
+   }]
+}
+```
+
+The value of countryCode is mostly used in segmentation, to decide which language to use when communicating with an end-user. It is based primarily on their address data or else on the store where they have signed up (which might not be where they live).
+
+So, in terms of understanding and communicating with the end-user, it is important that countryCode is correct. Your POS should have the option to easily update the end-user's countryCode when it's necessary. For countries using multiple languages the lang attribute is used.
+
+The field countryCode is not mandatory when creating a contact but it is highly recommended.
+
+The field birthDay, if used, must have the format YYYY-MM-DD as in the example payload above. If it is used then age is calculated automatically when the contact is created.
+
+## **Contact created**
+
+After the POST operation, this new contact is created and their complete data set is returned.
+
+```
+{
+  "id": "e8f17b1d-b777-4688-862b-cf38009a726e",
+  "attributes": {
+    "firstName": "Example",
+    "lastName": null,
+    "street": null,
+    "zipCode": null,
+    "city": null,
+    "email": "example@example.com",
+    "mobilePhone": null,
+    "countryCode": "SE",
+    "careOf": null,
+    "country": null,
+    "age": 57,
+    "birthDay": "1966-06-26",
+    "externalId": null,
+    "socialSecurityNumber": null,
+    "gender": null,
+    "staff": false,
+    "memberNumber": "999032095",
+    ...
+    "currentStore": {
+      "id": "b5e553d1-e4ba-40a0-8ee4-a9f631ee950b",
+      "name": "Megashop E-commerce SE, 444",
+      "externalId": "444"
+    }
+  },
+  "meta": {
+    "createdOn": "2022-10-24T11:22:19+02:00",
+    "modifiedOn": "2022-10-24T11:22:19+02:00",
+    "sourceType": "API",
+    "approved": true,
+    "contactType": "ExampleContactType"
+  },
+  "preferences": {
+    "acceptsEmail": true,
+    "acceptsPostal": true,
+    "acceptsSms": true
+  },
+  "consents": [{
+      "id": "memberConsent",
+      "value": true,
+      "date": "2022-01-01T00:00:00+0100",
+      "source": "POS",
+      "comment": "Approved member terms at checkout"
+   }]
+}
+```
+
+For consents, only the fields id and value are mandatory.
+
+## **Timeout**
+
+This endpoint has a significantly lower (under 10 seconds) enforced timeout compared to others in the API, and may return a _504 RequestTimeOut_ status. This is intentional to ensure timely feedback in customer-facing flows like onboarding.
+
+If Engage returns a timeout on this endpoint, no contact will have been created and all internal operations will be rolled back. In this case, the integrating system should retry the request in accordance with the [<u>Retry Policy</u>](https://developer.voyado.com/en/api/api-retry-policy.html), which provides guidance on recommended retry strategies.
+
+## **Responses**
+
+A successful creation will return _HTTP 201 Created_ along with the contact's data set as the response body.
+
+If the request has not been successful, you'll get one of the following HTTP error codes:
+
+- _400 : NoData_
+- _409: ApprovedContactWithKeyExists, ContactWithKeyIsBeingCreated_
+- _422: ValidationError_
+- _504: RequestTimeOut_
+
+Do not send null or empty values in the JSON payload when updating or creating a contact. Empty values will override existing values. Send only what you want to change and nothing else.
