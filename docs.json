@@ -16,7 +16,7 @@
           {
             "group": "Get Started with Engage",
             "pages": [
-              "developer/introduction",
+              "introduction",
               "developer/create-contact"
             ]
           },
